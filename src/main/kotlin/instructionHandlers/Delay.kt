@@ -2,7 +2,7 @@ package instructionHandlers
 
 import Shipment
 import ShippingUpdate
-import TrackingManager
+import TrackingSimulator
 
 class Delay : InstructionHandler {
     override fun handleInstruction(instructionSplit: List<String>, shipment: Shipment?) {
@@ -17,7 +17,7 @@ class Delay : InstructionHandler {
             )
         } catch (e: NumberFormatException) {
             throw IllegalArgumentException(
-                "Invalid number values: '${instructionSplit[1]}' or '${instructionSplit[2]}'",
+                "Invalid number values: '${instructionSplit[1]}' or '${instructionSplit[2]}' at line ${TrackingSimulator.instructionCount}",
                 e
             )
         }

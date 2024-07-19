@@ -161,6 +161,6 @@ fun stampConvert(timestamp: Long): String {
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         App()
-        TrackingManager.runSimulation(HttpServer())
+        TrackingSimulator.runSimulation("res/provided.txt")
     }
 }

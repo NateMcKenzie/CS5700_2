@@ -8,11 +8,11 @@ class TrackerViewerHelperTest {
     @BeforeTest
     fun setup() {
         shipment = Shipment(Status.Created, "s1", 1652712855468)
-        TrackingManager.addShipment(shipment)
+        TrackingSimulator.addShipment(shipment)
     }
 
     @AfterTest
-    fun clear() = TrackingManager.clearShipments()
+    fun clear() = TrackingSimulator.clearShipments()
 
     @Test
     fun defaultsTest() {
@@ -43,10 +43,10 @@ class TrackerViewerHelperTest {
 
         assertEquals("s1", viewer.shipmentId)
         assertEquals(Status.Delivered, viewer.shipmentStatus)
-        assertContentEquals(TrackingManager.findShipment("s1")?.updateHistory?.toSet(), viewer.shipmentUpdateHistory)
+        assertContentEquals(TrackingSimulator.findShipment("s1")?.updateHistory?.toSet(), viewer.shipmentUpdateHistory)
         assertEquals(1652712875870, viewer.expectedShipmentDeliveryDate)
         assertEquals("Last seen: Logan, UT", viewer.shipmentCurrentLocation)
-        assertContentEquals(TrackingManager.findShipment("s1")?.notes, viewer.shipmentNotes)
+        assertContentEquals(TrackingSimulator.findShipment("s1")?.notes, viewer.shipmentNotes)
     }
 
     @Test
@@ -55,10 +55,10 @@ class TrackerViewerHelperTest {
         viewer.trackShipment("s1")
         assertEquals("s1", viewer.shipmentId)
         assertEquals(Status.Created, viewer.shipmentStatus)
-        assertContentEquals(TrackingManager.findShipment("s1")?.updateHistory, viewer.shipmentUpdateHistory)
+        assertContentEquals(TrackingSimulator.findShipment("s1")?.updateHistory, viewer.shipmentUpdateHistory)
         assertEquals(1652712855468, viewer.expectedShipmentDeliveryDate)
         assertEquals("Warehouse", viewer.shipmentCurrentLocation)
-        assertContentEquals(TrackingManager.findShipment("s1")?.notes, viewer.shipmentNotes)
+        assertContentEquals(TrackingSimulator.findShipment("s1")?.notes, viewer.shipmentNotes)
     }
 
     @Test
@@ -80,10 +80,10 @@ class TrackerViewerHelperTest {
 
         assertEquals("s1", viewer.shipmentId)
         assertEquals(Status.Delivered, viewer.shipmentStatus)
-        assertContentEquals(TrackingManager.findShipment("s1")?.updateHistory?.toSet(), viewer.shipmentUpdateHistory)
+        assertContentEquals(TrackingSimulator.findShipment("s1")?.updateHistory?.toSet(), viewer.shipmentUpdateHistory)
         assertEquals(1652712875870, viewer.expectedShipmentDeliveryDate)
         assertEquals("Last seen: Logan, UT", viewer.shipmentCurrentLocation)
-        assertContentEquals(TrackingManager.findShipment("s1")?.notes, viewer.shipmentNotes)
+        assertContentEquals(TrackingSimulator.findShipment("s1")?.notes, viewer.shipmentNotes)
     }
 
     @Test
@@ -98,11 +98,9 @@ class TrackerViewerHelperTest {
     @Test
     fun hallucinatedIdTest() {
         val viewer = TrackerViewerHelper()
-        assertFalse{viewer.trackShipment("NeverHasBennARealShipmentId")}
-        //Full disclosure: I submitted this
-        //assertFailsWith<IllegalStateException> {
-        //    viewer.trackShipment("NeverHasBeenARealShipmentId")
-        //}
+        assertFailsWith<IllegalStateException> {
+            viewer.trackShipment("NeverHasBeenARealShipmentId")
+        }
     }
 
     @Test
