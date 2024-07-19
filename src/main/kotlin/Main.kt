@@ -16,10 +16,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import io.ktor.http.ContentDisposition.Companion.File
+import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.File
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Timer
+import java.util.*
 import kotlin.concurrent.schedule
 
 @Composable
@@ -158,9 +168,33 @@ fun stampConvert(timestamp: Long): String {
     return instant.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MM/dd/yy hh:mma"))
 }
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
-        TrackingSimulator.runSimulation("res/provided.txt")
+suspend fun runServer(){
+    embeddedServer(Netty, port = 8000) {
+        routing {
+            get("/") {
+                call.respondFile(File("res/index.html"))
+            }
+            post ( "/update" ) {
+                val updateString = call.receiveParameters()
+                print(updateString["instruction"])
+                call.respondRedirect("/")
+            }
+        }
+    }.start(wait = false)
+}
+
+fun runGUI(){
+    application {
+        Window(onCloseRequest = ::exitApplication) {
+            App()
+            TrackingSimulator.runSimulation("res/provided.txt")
+        }
     }
+}
+
+fun main() = runBlocking {
+    launch {
+        runServer()
+    }
+    runGUI()
 }
