@@ -19,7 +19,7 @@ class TrackerViewerHelper : Observer {
 
     fun trackShipment(id: String): Boolean {
         // Credit to Claude AI for telling me how to handle this null in a kotlin way
-        val foundShipment = TrackingSimulator.findShipment(id) ?: return false
+        val foundShipment = TrackingManager.findShipment(id) ?: return false
         foundShipment.subscribe(this)
         shipment = foundShipment
         update()

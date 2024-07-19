@@ -3,7 +3,7 @@ package instructionHandlerTests
 import CreateShipment
 import Shipment
 import Status
-import TrackingSimulator
+import TrackingManager
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -14,7 +14,7 @@ class CreateShipmentTest {
     fun createShipmentTest() {
         val shipment = Shipment(Status.Shipped, "s10000", 20000L)
         CreateShipment().handleInstruction("s10000,1652712855468".split(','), shipment)
-        assertNotNull(TrackingSimulator.findShipment(shipment.id))
+        assertNotNull(TrackingManager.findShipment(shipment.id))
     }
 
     @Test

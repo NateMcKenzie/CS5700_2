@@ -2,7 +2,7 @@ package instructionHandlers
 
 import Shipment
 import ShippingUpdate
-import TrackingSimulator
+import TrackingManager
 
 class Deliver : InstructionHandler {
     override fun handleInstruction(instructionSplit: List<String>, shipment: Shipment?) {
@@ -17,7 +17,7 @@ class Deliver : InstructionHandler {
             )
         } catch (e: NumberFormatException) {
             throw IllegalArgumentException(
-                "Invalid timestamp: '${instructionSplit[1]}' at line ${TrackingSimulator.instructionCount}",
+                "Invalid timestamp: '${instructionSplit[1]}'",
                 e
             )
         }

@@ -16,7 +16,7 @@ class Ship : InstructionHandler {
             )
         } catch (e: NumberFormatException) {
             throw IllegalArgumentException(
-                "Invalid number values: '${instructionSplit[1]}' or '${instructionSplit[2]}' at line ${TrackingSimulator.instructionCount}",
+                "Invalid number values: '${instructionSplit[1]}' or '${instructionSplit[2]}'",
                 e
             )
         }

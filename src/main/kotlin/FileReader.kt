@@ -5,14 +5,13 @@ import kotlin.concurrent.timer
 class FileReader(
     fileName: String,
     private val period: Long = 1000L,
-) : Subject {
-    var nextInstruction: String = ""
-        private set
+) : InstructionStream(){
     private val file = File(fileName).bufferedReader()
-    private var observers: MutableList<Observer> = mutableListOf()
     private lateinit var timer: Timer
+    var lineNumber = 0
+        private set
 
-    fun start() {
+    override fun start() {
         timer = timer(initialDelay = 0L, period = period) {
             readInstruction()
         }
@@ -22,21 +21,11 @@ class FileReader(
         //Credit to Claude AI for this kotlin idiom (if null do expected, else shut it down)
         file.readLine()?.also { line ->
             nextInstruction = line
+            lineNumber++
             notifySubscribers()
         } ?: run {
             timer.cancel()
         }
     }
 
-    override fun subscribe(observer: Observer) {
-        observers.add(observer)
-    }
-
-    override fun unsubscribe(observer: Observer) {
-        observers.remove(observer)
-    }
-
-    override fun notifySubscribers() {
-        observers.forEach { it.update() }
-    }
 }
